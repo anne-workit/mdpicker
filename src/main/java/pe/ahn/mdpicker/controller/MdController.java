@@ -2,22 +2,32 @@ package pe.ahn.mdpicker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pe.ahn.mdpicker.model.entity.Brand;
+import pe.ahn.mdpicker.model.entity.CategoryPrice;
 import pe.ahn.mdpicker.model.price.PriceModel;
 import pe.ahn.mdpicker.model.response.DataResponse;
+import pe.ahn.mdpicker.repo.BrandRepository;
+import pe.ahn.mdpicker.repo.PriceRepository;
 import pe.ahn.mdpicker.service.DataService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/md")
 public class MdController {
     @Autowired
     DataService dataService;
+    @Autowired
+    private BrandRepository brandRepository;
+    @Autowired
+    private PriceRepository priceRepository;
 
-    @GetMapping(path="/cost/summary")
+    @GetMapping(path="/price/summary")
     public DataResponse<PriceModel> getCostSummary() {
         return new DataResponse<>(dataService.fetchMinPriceBrand());
     }
 
-    @GetMapping(path="/cost/brand")
+    @GetMapping(path="/price/brand")
     public DataResponse<PriceModel> fetchPriceInfo(@RequestParam("order") String order) {
         return new DataResponse<>(
                 dataService.fetchMinMaxPriceBrandByCategory(order)
@@ -25,10 +35,17 @@ public class MdController {
     }
 
     // http://localhost:8000/md/cost?category=1
-    @GetMapping(path="/cost/category")
-    public DataResponse<PriceModel> fetchPricesByCategory(@RequestParam("category") Long categoryId) {
+    @GetMapping(path="/price/category")
+    public DataResponse<PriceModel> fetchPricesByCategory(@RequestParam("id") Long categoryId) {
         return new DataResponse<>(
                 dataService.fetchMinMaxPriceBrandByCategory(categoryId)
         );
     }
+
+    @PostMapping(path="/brand")
+    public DataResponse<Brand> addBrand(@RequestBody Brand param) {
+        Brand result = dataService.insertBrandAndPrice(param);
+        return new DataResponse<>(result);
+    }
+
 }

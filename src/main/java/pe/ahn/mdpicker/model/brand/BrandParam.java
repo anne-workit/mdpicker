@@ -1,17 +1,18 @@
 package pe.ahn.mdpicker.model.brand;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import pe.ahn.mdpicker.model.category.CategoryListItem;
 
-import java.util.ArrayList;
+import java.util.List;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Setter
+@Getter
 public class BrandParam {
-    private String brand;
-    private ArrayList<CategoryListItem> categoryParamList;
+    private Long brandId;
+    private List<CategoryListItem> categoryList;
+    private String brandName;
     private String useYn;
 }

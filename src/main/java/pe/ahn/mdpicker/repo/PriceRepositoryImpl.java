@@ -12,7 +12,8 @@ import pe.ahn.mdpicker.service.PriceOrder;
 
 import java.util.List;
 
-import static pe.ahn.mdpicker.model.entity.QPrice.price1;
+import static pe.ahn.mdpicker.model.entity.QCategoryPrice.categoryPrice;
+
 
 @Repository
 @AllArgsConstructor
@@ -22,13 +23,18 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
     @Override
     public List<CategoryListItem> getMinPriceAndBrandByCategory() {
         return queryFactory
-                .select(Projections.constructor(CategoryListItem.class, price1.category.categoryName, price1.price, price1.brand.brandName))
-                .from(price1)
-                .where(Expressions.list(price1.category.categoryId, price1.price).in(
+                .select(Projections.constructor(
+                        CategoryListItem.class,
+                        categoryPrice.price,
+                        categoryPrice.categoryTypeId,
+                        categoryPrice.brand.brandName
+                ))
+                .from(categoryPrice)
+                .where(Expressions.list(categoryPrice.categoryTypeId, categoryPrice.price).in(
                         queryFactory
-                                .select(price1.category.categoryId, price1.price.min())
-                                .from(price1)
-                                .groupBy(price1.category.categoryId)
+                                .select(categoryPrice.categoryTypeId, categoryPrice.price.min())
+                                .from(categoryPrice)
+                                .groupBy(categoryPrice.categoryTypeId)
                 ))
                 .fetch();
     }
@@ -38,14 +44,19 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
         JPAQuery<PriceModel> query = null;
 
         query = queryFactory
-                .select(Projections.constructor(PriceModel.class, price1.brand.brandId, price1.brand.brandName, price1.price.sum()))
-                .from(price1)
-                .groupBy(price1.brand.brandId);
+                .select(Projections.constructor(
+                        PriceModel.class,
+                        categoryPrice.brand.brandId,
+                        categoryPrice.brand.brandName,
+                        categoryPrice.price.sum()
+                ))
+                .from(categoryPrice)
+                .groupBy(categoryPrice.brand.brandId);
 
         if (order.equals(PriceOrder.ASC)) {
-            query = query.orderBy(price1.price.sum().asc());
+            query = query.orderBy(categoryPrice.price.sum().asc());
         } else {
-            query = query.orderBy(price1.price.sum().desc());
+            query = query.orderBy(categoryPrice.price.sum().desc());
         }
         return query.fetchFirst();
     }
@@ -53,9 +64,9 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
     @Override
     public List<CategoryListItem> getPricesByBrand(Long brandId) {
         return queryFactory
-                .select(Projections.constructor(CategoryListItem.class, price1.category.categoryName, price1.price))
-                .from(price1)
-                .where(price1.brand.brandId.eq(brandId))
+                .select(Projections.constructor(CategoryListItem.class, categoryPrice.categoryTypeId, categoryPrice.price))
+                .from(categoryPrice)
+                .where(categoryPrice.brand.brandId.eq(brandId))
                 .fetch();
     }
 
@@ -74,21 +85,21 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
 
         if (order.equals(PriceOrder.ASC)) {
             query = queryFactory
-                    .select(Projections.constructor(CategoryListItem.class, price1.brand.brandName, price1.price.min()));
+                    .select(Projections.constructor(CategoryListItem.class, categoryPrice.brand.brandName, categoryPrice.price.min()));
         } else {
             query = queryFactory
-                    .select(Projections.constructor(CategoryListItem.class, price1.brand.brandName, price1.price.max()));
+                    .select(Projections.constructor(CategoryListItem.class, categoryPrice.brand.brandName, categoryPrice.price.max()));
         }
 
         query = query
-                .from(price1)
-                .where(price1.category.categoryId.eq(categoryId))
-                .groupBy(price1.brand.brandId);
+                .from(categoryPrice)
+                .where(categoryPrice.categoryTypeId.eq(categoryId))
+                .groupBy(categoryPrice.brand.brandId);
 
         if (order.equals(PriceOrder.ASC)) {
-            query = query.orderBy(price1.price.min().asc());
+            query = query.orderBy(categoryPrice.price.min().asc());
         } else {
-            query = query.orderBy(price1.price.max().desc());
+            query = query.orderBy(categoryPrice.price.max().desc());
         }
         return query
                 .limit(1L)
