@@ -1,11 +1,13 @@
 package pe.ahn.mdpicker.system;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pe.ahn.mdpicker.model.response.ErrorCode;
 import pe.ahn.mdpicker.model.response.ErrorResponse;
 
 @RestControllerAdvice
+@Slf4j
 public class ApiExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ErrorResponse handleApiException(ApiException e) {
@@ -14,6 +16,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleException(Exception e) {
+        log.error(e.getMessage(), e);
         return new ErrorResponse(ErrorCode.INTER_SERVER_ERROR, e.getMessage());
     }
 }
