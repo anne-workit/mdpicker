@@ -18,6 +18,7 @@ import static pe.ahn.mdpicker.model.entity.QCategoryPrice.categoryPrice;
 @Repository
 @AllArgsConstructor
 public class PriceRepositoryImpl implements PriceCustomRepository {
+    private final String USE_Y = "Y";
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -34,8 +35,8 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
                         queryFactory
                                 .select(categoryPrice.categoryTypeId, categoryPrice.price.min())
                                 .from(categoryPrice)
-                                .groupBy(categoryPrice.categoryTypeId)
-                ))
+                                .groupBy(categoryPrice.categoryTypeId))
+                        .and(categoryPrice.brand.useYn.eq(this.USE_Y)))
                 .fetch();
     }
 
@@ -51,6 +52,7 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
                         categoryPrice.price.sum()
                 ))
                 .from(categoryPrice)
+                .where(categoryPrice.brand.useYn.eq(this.USE_Y))
                 .groupBy(categoryPrice.brand.brandId);
 
         if (order.equals(PriceOrder.ASC)) {
@@ -66,7 +68,8 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
         return queryFactory
                 .select(Projections.constructor(CategoryListItem.class, categoryPrice.categoryTypeId, categoryPrice.price))
                 .from(categoryPrice)
-                .where(categoryPrice.brand.brandId.eq(brandId))
+                .where(categoryPrice.brand.brandId.eq(brandId)
+                        .and(categoryPrice.brand.useYn.eq(this.USE_Y)))
                 .fetch();
     }
 
@@ -93,7 +96,8 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
 
         query = query
                 .from(categoryPrice)
-                .where(categoryPrice.categoryTypeId.eq(categoryId))
+                .where(categoryPrice.categoryTypeId.eq(categoryId)
+                        .and(categoryPrice.brand.useYn.eq(this.USE_Y)))
                 .groupBy(categoryPrice.brand.brandId);
 
         if (order.equals(PriceOrder.ASC)) {

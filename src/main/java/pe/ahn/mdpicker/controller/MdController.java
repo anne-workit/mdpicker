@@ -3,14 +3,11 @@ package pe.ahn.mdpicker.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pe.ahn.mdpicker.model.entity.Brand;
-import pe.ahn.mdpicker.model.entity.CategoryPrice;
 import pe.ahn.mdpicker.model.price.PriceModel;
 import pe.ahn.mdpicker.model.response.DataResponse;
 import pe.ahn.mdpicker.repo.BrandRepository;
 import pe.ahn.mdpicker.repo.PriceRepository;
 import pe.ahn.mdpicker.service.DataService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/md")
@@ -43,9 +40,21 @@ public class MdController {
     }
 
     @PostMapping(path="/brand")
-    public DataResponse<Brand> addBrand(@RequestBody Brand param) {
-        Brand result = dataService.insertBrandAndPrice(param);
-        return new DataResponse<>(result);
+    public DataResponse<Long> addBrand(@RequestBody Brand param) {
+        Long brandId = dataService.insertBrandAndPrice(param);
+        return new DataResponse<>(brandId);
+    }
+
+    @PutMapping(path="/brand")
+    public DataResponse<Long> updateBrand(@RequestBody Brand param) {
+        Long brandId = dataService.updateBrandAndPrice(param);
+        return new DataResponse<>(brandId);
+    }
+
+    @DeleteMapping(path="/brand")
+    public DataResponse<Long> deleteBrand(@RequestBody Brand param) {
+        Long brandId = dataService.deleteBrandData(param);
+        return new DataResponse<>(brandId);
     }
 
 }

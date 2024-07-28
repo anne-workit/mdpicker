@@ -17,7 +17,6 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long brandId;
 
-    @NonNull
     @Column(nullable = false, length = 10, name = "brand_name")
     private String brandName;
 
@@ -28,4 +27,9 @@ public class Brand {
     @OneToMany
     @JoinColumn(name = "brand_id")
     private List<CategoryPrice> categoryList = new ArrayList<CategoryPrice>();
+
+    public Brand(String brandName, @NonNull String useYn) {
+        this.brandName = brandName;
+        this.useYn = useYn;
+    }
 }

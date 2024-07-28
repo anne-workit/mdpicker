@@ -27,4 +27,10 @@ public class CategoryListItem {
         this.price = price;
         this.brand = brand;
     }
+
+    public CategoryListItem(@NonNull Long price, @NonNull Long categoryId, @NonNull String brand) {
+        this.brand = brand;
+        this.price = price;
+        this.categoryId = categoryId;
+    }
 }

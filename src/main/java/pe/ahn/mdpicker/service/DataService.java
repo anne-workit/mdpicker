@@ -69,7 +69,7 @@ public class DataService {
         );
     }
 
-    public Brand insertBrandAndPrice(Brand brand) {
+    public Long insertBrandAndPrice(Brand brand) {
         Brand newBrand = new Brand(brand.getBrandName(), brand.getUseYn());
         brandRepository.save(newBrand);
 
@@ -78,6 +78,37 @@ public class DataService {
             categoryPrice.setBrand(newBrand);
             priceRepository.save(categoryPrice);
         }
-        return brand;
+        return newBrand.getBrandId();
+    }
+
+    public Long updateBrandAndPrice(Brand requestBrand) {
+        Brand brand = brandRepository
+                .findById(requestBrand.getBrandId())
+                .orElseThrow(() -> new ApiException("No Content", ErrorCode.BAD_REQUEST));
+
+        brand.setBrandName(requestBrand.getBrandName());
+        brandRepository.save(brand);
+
+        List<CategoryPrice> categoryList = requestBrand.getCategoryList();
+        for (CategoryPrice categoryPrice : categoryList) {
+            CategoryPrice selectedCategoryPrice = priceRepository
+                    .findById(categoryPrice.getId())
+                    .orElseThrow(() -> new ApiException("No Content", ErrorCode.BAD_REQUEST));
+
+            selectedCategoryPrice.setBrand(brand);
+            selectedCategoryPrice.setPrice(categoryPrice.getPrice());
+            priceRepository.save(selectedCategoryPrice);
+        }
+        return brand.getBrandId();
+    }
+
+    public Long deleteBrandData(Brand brand) {
+        Brand newBrand = brandRepository
+                .findById(brand.getBrandId())
+                .orElseThrow(() -> new ApiException("No Content", ErrorCode.BAD_REQUEST));
+
+        newBrand.setUseYn("N");
+        brandRepository.save(newBrand);
+        return newBrand.getBrandId();
     }
 }
