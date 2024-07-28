@@ -2,12 +2,9 @@ package pe.ahn.mdpicker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pe.ahn.mdpicker.model.category.CategoryListItem;
 import pe.ahn.mdpicker.model.price.PriceModel;
 import pe.ahn.mdpicker.model.response.DataResponse;
 import pe.ahn.mdpicker.service.DataService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/md")

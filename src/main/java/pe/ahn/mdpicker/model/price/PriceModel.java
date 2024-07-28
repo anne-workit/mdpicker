@@ -27,10 +27,10 @@ public class PriceModel {
         this.categories = categories;
     }
 
-    public PriceModel(Long brandId, String brand, List<CategoryListItem> categories) {
+    public PriceModel(Long brandId, String brand, Long totalPrice) {
         this.brand = brand;
         this.brandId = brandId;
-        this.categories = categories;
+        this.totalPrice = totalPrice;
     }
 
     public PriceModel(Long categoryId, String category, List<CategoryListItem> minPrice, List<CategoryListItem> maxPrice) {

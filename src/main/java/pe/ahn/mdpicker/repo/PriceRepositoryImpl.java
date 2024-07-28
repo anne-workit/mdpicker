@@ -8,21 +8,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 import pe.ahn.mdpicker.model.category.CategoryListItem;
 import pe.ahn.mdpicker.model.price.PriceModel;
+import pe.ahn.mdpicker.service.PriceOrder;
 
 import java.util.List;
 
 import static pe.ahn.mdpicker.model.entity.QPrice.price1;
-
-
-interface FILTER {
-    String BRAND = "brand";
-    String CATEGORY = "category";
-}
-
-interface ORDER {
-    String ASC = "asc";
-    String DESC = "desc";
-}
 
 @Repository
 @AllArgsConstructor
@@ -47,24 +37,17 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
     public PriceModel getBrandOrderByPrice(String order) {
         JPAQuery<PriceModel> query = null;
 
-        if (order.equals(ORDER.ASC)) {
-            query = queryFactory
-                    .select(Projections.constructor(PriceModel.class, price1.brand.brandId, price1.brand.brandName, price1.price.min()));
-        } else {
-            query = queryFactory
-                    .select(Projections.constructor(PriceModel.class, price1.brand.brandId, price1.brand.brandName, price1.price.max()));
-        }
-
-        query = query
+        query = queryFactory
+                .select(Projections.constructor(PriceModel.class, price1.brand.brandId, price1.brand.brandName, price1.price.sum()))
                 .from(price1)
                 .groupBy(price1.brand.brandId);
 
-        if (order.equals(ORDER.ASC)) {
-            query = query.orderBy(price1.price.min().asc());
+        if (order.equals(PriceOrder.ASC)) {
+            query = query.orderBy(price1.price.sum().asc());
         } else {
-            query = query.orderBy(price1.price.max().desc());
+            query = query.orderBy(price1.price.sum().desc());
         }
-        return query.fetchOne();
+        return query.fetchFirst();
     }
 
     @Override
@@ -78,18 +61,18 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
 
     @Override
     public List<CategoryListItem> getMinBrandByCategory(Long categoryId) {
-        return getBrandByCategory(categoryId, ORDER.ASC);
+        return getBrandByCategory(categoryId, PriceOrder.ASC);
     }
 
     @Override
     public List<CategoryListItem> getMaxBrandByCategory(Long categoryId) {
-        return getBrandByCategory(categoryId, ORDER.DESC);
+        return getBrandByCategory(categoryId, PriceOrder.DESC);
     }
 
     private List<CategoryListItem> getBrandByCategory(Long categoryId, String order) {
         JPAQuery<CategoryListItem> query = null;
 
-        if (order.equals(ORDER.ASC)) {
+        if (order.equals(PriceOrder.ASC)) {
             query = queryFactory
                     .select(Projections.constructor(CategoryListItem.class, price1.brand.brandName, price1.price.min()));
         } else {
@@ -102,7 +85,7 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
                 .where(price1.category.categoryId.eq(categoryId))
                 .groupBy(price1.brand.brandId);
 
-        if (order.equals(ORDER.ASC)) {
+        if (order.equals(PriceOrder.ASC)) {
             query = query.orderBy(price1.price.min().asc());
         } else {
             query = query.orderBy(price1.price.max().desc());
