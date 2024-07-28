@@ -31,6 +31,9 @@ public class DataService {
     }
 
     public PriceModel fetchMinMaxPriceBrandByCategory(String order) {
+        if (!(order.equals(PriceOrder.ASC) || order.equals(PriceOrder.DESC))) {
+            throw new ApiException("정렬 기준을 확인하세요. (최저가: asc / 최고가: desc)", ErrorCode.BAD_REQUEST);
+        }
         PriceModel result = priceRepository.getBrandOrderByPrice(order);
         List<CategoryListItem> categoryList = priceRepository.getPricesByBrand(result.getBrandId());
         result.setCategories(categoryList);
