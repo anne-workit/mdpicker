@@ -1,5 +1,6 @@
 package pe.ahn.mdpicker.repo;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -10,6 +11,7 @@ import pe.ahn.mdpicker.model.category.CategoryListItem;
 import pe.ahn.mdpicker.model.price.PriceModel;
 import pe.ahn.mdpicker.service.PriceOrder;
 
+import java.util.Collections;
 import java.util.List;
 
 import static pe.ahn.mdpicker.model.entity.QCategoryPrice.categoryPrice;
@@ -37,6 +39,8 @@ public class PriceRepositoryImpl implements PriceCustomRepository {
                                 .from(categoryPrice)
                                 .groupBy(categoryPrice.categoryTypeId))
                         .and(categoryPrice.brand.useYn.eq(this.USE_Y)))
+                .orderBy(
+                )
                 .fetch();
     }
 

@@ -4,33 +4,36 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 @Data
-@AllArgsConstructor
-@Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@Setter
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CategoryListItem {
-    @NonNull
-    private String category;
-    @NonNull
     private Long price;
+    private String category;
     private String brand;
-    private Long categoryId;
+    private Long categoryTypeId;
+//    private Long categoryTypeId;
 
-    public CategoryListItem(Long categoryId, @NonNull Long price) {
-        this.categoryId = categoryId;
+    public CategoryListItem(Long categoryTypeId, Long price) {
+        this.categoryTypeId = categoryTypeId;
         this.price = price;
     }
 
-    public CategoryListItem(@NonNull String category, @NonNull Long price, String brand) {
+    public CategoryListItem(String category, Long price, String brand) {
         this.category = category;
         this.price = price;
         this.brand = brand;
     }
 
-    public CategoryListItem(@NonNull Long price, @NonNull Long categoryId, @NonNull String brand) {
+    public CategoryListItem(Long price, Long categoryTypeId, String brand) {
         this.brand = brand;
         this.price = price;
-        this.categoryId = categoryId;
+        this.categoryTypeId = categoryTypeId;
+    }
+
+    public CategoryListItem(String brand, Long price) {
+        this.brand = brand;
+        this.price = price;
     }
 }

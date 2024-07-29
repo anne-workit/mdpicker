@@ -2,6 +2,7 @@ package pe.ahn.mdpicker.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pe.ahn.mdpicker.model.brand.BrandParam;
 import pe.ahn.mdpicker.model.entity.Brand;
 import pe.ahn.mdpicker.model.price.PriceModel;
 import pe.ahn.mdpicker.model.response.DataResponse;
@@ -39,6 +40,11 @@ public class MdController {
         );
     }
 
+    @GetMapping(path="/brand")
+    public DataResponse<BrandParam> fetchBrand(@RequestParam("id") Long brandId) {
+        return new DataResponse<>(dataService.findBrand(brandId));
+    }
+
     @PostMapping(path="/brand")
     public DataResponse<Long> addBrand(@RequestBody Brand param) {
         Long brandId = dataService.insertBrandAndPrice(param);
@@ -52,9 +58,9 @@ public class MdController {
     }
 
     @DeleteMapping(path="/brand")
-    public DataResponse<Long> deleteBrand(@RequestBody Brand param) {
-        Long brandId = dataService.deleteBrandData(param);
-        return new DataResponse<>(brandId);
+    public DataResponse<Long> deleteBrand(@RequestParam("id") Long brandId) {
+        Long deletedId = dataService.deleteBrandData(brandId);
+        return new DataResponse<>(deletedId);
     }
 
 }
