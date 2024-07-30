@@ -6,7 +6,7 @@ import pe.ahn.mdpicker.model.price.PriceModel;
 import java.util.List;
 
 public interface PriceCustomRepository {
-    List<CategoryListItem> getMinPriceAndBrandByCategory();
+//    List<CategoryListItem> getMinPriceAndBrandByCategory();
     PriceModel getBrandOrderByPrice(String order);
     List<CategoryListItem> getPricesByBrand(Long brandId);
     List<CategoryListItem> getMinBrandByCategory(Long categoryId);

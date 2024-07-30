@@ -2,8 +2,8 @@ package pe.ahn.mdpicker.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pe.ahn.mdpicker.model.PriceQueryResultInterface;
 import pe.ahn.mdpicker.model.brand.BrandParam;
-import pe.ahn.mdpicker.model.category.CategoryKey;
 import pe.ahn.mdpicker.model.category.CategoryListItem;
 import pe.ahn.mdpicker.model.category.CategoryInfo;
 import pe.ahn.mdpicker.model.entity.Brand;
@@ -14,10 +14,9 @@ import pe.ahn.mdpicker.repo.BrandRepository;
 import pe.ahn.mdpicker.repo.PriceRepository;
 import pe.ahn.mdpicker.system.ApiException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -30,22 +29,26 @@ public class DataService {
 
     public PriceModel fetchMinPriceBrand() {
         PriceModel result = new PriceModel();
-        List<CategoryListItem> categoryList = priceRepository.getMinPriceAndBrandByCategory();
+        List<PriceQueryResultInterface> categoryList = priceRepository.findAllMinPriceBrand();
 
-        for (CategoryListItem listItem : categoryList) {
-            listItem.setCategory(Objects.requireNonNull(
-                    CategoryInfo.getCategoryInfo(listItem.getCategoryTypeId()))
+        List<CategoryListItem> responseCategoryList = new ArrayList<>();
+
+        for (PriceQueryResultInterface listItem : categoryList) {
+            Brand b = brandRepository.findById(listItem.getBrand_id())
+                    .orElseThrow(() -> new ApiException("브랜드가 없습니다.", ErrorCode.BAD_REQUEST));
+
+            responseCategoryList.add(
+                    new CategoryListItem(
+                            CategoryInfo.getCategoryInfo(listItem.getCategory_Type_id()),
+                            listItem.getPrice(),
+                            b.getBrandName()
+                    )
             );
         }
 
-        // 중복되는 값이 있는지 확인
-        List<CategoryListItem> duplicated = categoryList.stream()
-                .collect(Collectors.groupingBy(listItem -> new CategoryKey(listItem.getCategoryTypeId(), listItem.getPrice())))
-                .entrySet().stream().filter(e -> e.getValue().size() > 1).flatMap(e -> e.getValue().stream()).toList();
-
-        Long totalPrice = categoryList.stream().mapToLong(CategoryListItem::getPrice).sum();
+        Long totalPrice = responseCategoryList.stream().mapToLong(CategoryListItem::getPrice).sum();
         result.setTotalPrice(totalPrice);
-        result.setCategories(categoryList);
+        result.setCategories(responseCategoryList);
         return result;
     }
 

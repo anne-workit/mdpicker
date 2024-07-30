@@ -1,8 +1,8 @@
 package pe.ahn.mdpicker.repo;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,6 @@ import pe.ahn.mdpicker.model.category.CategoryListItem;
 import pe.ahn.mdpicker.model.price.PriceModel;
 import pe.ahn.mdpicker.service.PriceOrder;
 
-import java.util.Collections;
 import java.util.List;
 
 import static pe.ahn.mdpicker.model.entity.QCategoryPrice.categoryPrice;
@@ -22,27 +21,6 @@ import static pe.ahn.mdpicker.model.entity.QCategoryPrice.categoryPrice;
 public class PriceRepositoryImpl implements PriceCustomRepository {
     private final String USE_Y = "Y";
     private final JPAQueryFactory queryFactory;
-
-    @Override
-    public List<CategoryListItem> getMinPriceAndBrandByCategory() {
-        return queryFactory
-                .select(Projections.constructor(
-                        CategoryListItem.class,
-                        categoryPrice.price,
-                        categoryPrice.categoryTypeId,
-                        categoryPrice.brand.brandName
-                ))
-                .from(categoryPrice)
-                .where(Expressions.list(categoryPrice.categoryTypeId, categoryPrice.price).in(
-                        queryFactory
-                                .select(categoryPrice.categoryTypeId, categoryPrice.price.min())
-                                .from(categoryPrice)
-                                .groupBy(categoryPrice.categoryTypeId))
-                        .and(categoryPrice.brand.useYn.eq(this.USE_Y)))
-                .orderBy(
-                )
-                .fetch();
-    }
 
     @Override
     public PriceModel getBrandOrderByPrice(String order) {

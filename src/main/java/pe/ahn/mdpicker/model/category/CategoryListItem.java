@@ -13,7 +13,7 @@ public class CategoryListItem {
     private String category;
     private String brand;
     private Long categoryTypeId;
-//    private Long categoryTypeId;
+    private Long totalPrice;
 
     public CategoryListItem(Long categoryTypeId, Long price) {
         this.categoryTypeId = categoryTypeId;
@@ -26,10 +26,11 @@ public class CategoryListItem {
         this.brand = brand;
     }
 
-    public CategoryListItem(Long price, Long categoryTypeId, String brand) {
+    public CategoryListItem(Long price, Long categoryTypeId, String brand, Long totalPrice) {
         this.brand = brand;
         this.price = price;
         this.categoryTypeId = categoryTypeId;
+        this.totalPrice = totalPrice;
     }
 
     public CategoryListItem(String brand, Long price) {
