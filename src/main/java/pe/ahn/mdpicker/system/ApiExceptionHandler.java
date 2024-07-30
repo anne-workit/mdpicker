@@ -1,6 +1,8 @@
 package pe.ahn.mdpicker.system;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pe.ahn.mdpicker.model.response.ErrorCode;
@@ -10,13 +12,16 @@ import pe.ahn.mdpicker.model.response.ErrorResponse;
 @Slf4j
 public class ApiExceptionHandler {
     @ExceptionHandler(ApiException.class)
-    public ErrorResponse handleApiException(ApiException e) {
-        return new ErrorResponse(e.getErrorCode(), e.getMessage());
+    public ResponseEntity<ErrorResponse> handleApiException(ApiException e) {
+        return new ResponseEntity<>(
+                new ErrorResponse(e.getErrorCode(), e.getMessage()),
+                e.getErrorCode().getStatusCode());
     }
 
     @ExceptionHandler(Exception.class)
-    public ErrorResponse handleException(Exception e) {
-        log.error(e.getMessage(), e);
-        return new ErrorResponse(ErrorCode.INTER_SERVER_ERROR, e.getMessage());
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        return new ResponseEntity<>(
+                new ErrorResponse(ErrorCode.INTER_SERVER_ERROR, e.getMessage()),
+                ErrorCode.INTER_SERVER_ERROR.getStatusCode());
     }
 }

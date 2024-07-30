@@ -28,15 +28,15 @@ public class MdController {
     @GetMapping(path="/price/brand")
     public DataResponse<PriceModel> fetchPriceInfo(@RequestParam("order") String order) {
         return new DataResponse<>(
-                dataService.fetchMinMaxPriceBrandByCategory(order)
+                dataService.findBrandOrderByPrice(order)
         );
     }
 
     // http://localhost:8000/md/cost?category=1
     @GetMapping(path="/price/category")
-    public DataResponse<PriceModel> fetchPricesByCategory(@RequestParam("id") Long categoryId) {
+    public DataResponse<PriceModel> fetchPricesByCategory(@RequestParam("id") Long categoryTypeId) {
         return new DataResponse<>(
-                dataService.fetchMinMaxPriceBrandByCategory(categoryId)
+                dataService.fetchMinMaxPriceBrandByCategory(categoryTypeId)
         );
     }
 

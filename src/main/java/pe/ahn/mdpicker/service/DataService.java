@@ -52,7 +52,7 @@ public class DataService {
         return result;
     }
 
-    public PriceModel fetchMinMaxPriceBrandByCategory(String order) throws NullPointerException {
+    public PriceModel findBrandOrderByPrice(String order) throws NullPointerException {
         if (!(order.equals(PriceOrder.ASC) || order.equals(PriceOrder.DESC))) {
             throw new ApiException("정렬 기준을 확인하세요. (최저가: asc / 최고가: desc)", ErrorCode.BAD_REQUEST);
         }
@@ -67,17 +67,17 @@ public class DataService {
         return result;
     }
 
-    public PriceModel fetchMinMaxPriceBrandByCategory(Long categoryId) {
-        String categoryInfo = CategoryInfo.getCategoryInfo(categoryId);
+    public PriceModel fetchMinMaxPriceBrandByCategory(Long categoryTypeId) {
+        String categoryInfo = CategoryInfo.getCategoryInfo(categoryTypeId);
+
         if (categoryInfo == null) {
             throw new ApiException("카테고리 정보가 없습니다.", ErrorCode.BAD_REQUEST);
         }
 
-        List<CategoryListItem> minPrice = priceRepository.getMinBrandByCategory(categoryId);
-        System.out.println("min brand: " + minPrice.get(0).getBrand());
-        List<CategoryListItem> maxPrice = priceRepository.getMaxBrandByCategory(categoryId);
+        List<CategoryListItem> minPrice = priceRepository.getMinBrandByCategory(categoryTypeId);
+        List<CategoryListItem> maxPrice = priceRepository.getMaxBrandByCategory(categoryTypeId);
         return new PriceModel(
-                categoryId,
+                categoryTypeId,
                 categoryInfo,
                 minPrice,
                 maxPrice

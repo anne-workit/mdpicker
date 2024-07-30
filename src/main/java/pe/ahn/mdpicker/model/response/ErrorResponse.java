@@ -9,7 +9,6 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse extends CommonResponse{
     public ErrorResponse(ErrorCode errorCode, String message) {
-        this.setStatusCode(errorCode.getStatusCode());
-        this.setMessage(message);
+        super(errorCode.getStatusCode().value(), message);
     }
 }
