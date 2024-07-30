@@ -45,7 +45,6 @@ public class DataService {
                     )
             );
         }
-
         Long totalPrice = responseCategoryList.stream().mapToLong(CategoryListItem::getPrice).sum();
         result.setTotalPrice(totalPrice);
         result.setCategories(responseCategoryList);
@@ -116,6 +115,7 @@ public class DataService {
             categoryPrice.setBrand(newBrand);
             priceRepository.save(categoryPrice);
         }
+        System.out.println(categoryList.get(0).getCategoryId());
         return newBrand.getBrandId();
     }
 
