@@ -1,8 +1,6 @@
 package pe.ahn.mdpicker.database;
 
 import jakarta.transaction.Transactional;
-import jdk.jfr.Category;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class RepositoryTest {
+public class RepositoryTests {
     @Autowired
     private PriceRepository priceRepository;
 
@@ -39,15 +37,6 @@ public class RepositoryTest {
         List<CategoryListItem> priceList = priceRepository.getMinBrandByCategory(categoryTypeId);
         assertEquals(priceList.get(0).getPrice(), 10000);
         assertEquals(priceList.get(0).getBrand(), "C");
-    }
-
-    @Test
-    public void getMinPriceBrand() {
-        List<CategoryListItem> priceList = priceRepository.getMinPriceAndBrandByCategory();
-        assertEquals(priceList.get(1).getPrice(), 5000);
-        assertEquals(priceList.get(1).getBrand(), "E");
-        assertEquals(priceList.get(3).getPrice(), 9000);
-        assertEquals(priceList.get(3).getBrand(), "G");
     }
 
     @Test

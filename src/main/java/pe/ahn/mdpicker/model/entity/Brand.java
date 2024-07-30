@@ -1,5 +1,6 @@
 package pe.ahn.mdpicker.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,7 @@ public class Brand {
     private String useYn;
 
     @OneToMany
+    @JsonManagedReference
     @JoinColumn(name = "brand_id")
     private List<CategoryPrice> categoryList = new ArrayList<CategoryPrice>();
 

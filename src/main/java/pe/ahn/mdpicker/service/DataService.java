@@ -70,7 +70,7 @@ public class DataService {
     public PriceModel fetchMinMaxPriceBrandByCategory(Long categoryId) {
         String categoryInfo = CategoryInfo.getCategoryInfo(categoryId);
         if (categoryInfo == null) {
-            throw new ApiException("카테고리 정보가 없습니다.", ErrorCode.NOT_FOUND);
+            throw new ApiException("카테고리 정보가 없습니다.", ErrorCode.BAD_REQUEST);
         }
 
         List<CategoryListItem> minPrice = priceRepository.getMinBrandByCategory(categoryId);
@@ -87,7 +87,7 @@ public class DataService {
     public BrandParam findBrand(Long brandId) {
         Brand brand = brandRepository
                 .findById(brandId)
-                .orElseThrow(() -> new ApiException("브랜드가 없습니다.", ErrorCode.NOT_FOUND));
+                .orElseThrow(() -> new ApiException("브랜드가 없습니다.", ErrorCode.BAD_REQUEST));
 
         List<CategoryPrice> categoryPrices = brand.getCategoryList();
         List<CategoryListItem> categoryListItems = categoryPrices.stream().map(
